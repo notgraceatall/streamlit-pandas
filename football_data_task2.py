@@ -3,6 +3,9 @@ import pandas as pd
 import time
 from statsbombpy import sb
 
+# py -m pip install streamlit statsbombpy pandas
+# py -m streamlit run football_data_task2.py
+
 # Set page config
 st.set_page_config(page_title="Football Data Analysis", layout="wide")
 
@@ -55,6 +58,7 @@ if EURO22MATCHES == {}:
 
 # Title and Introduction
 st.title("⚽ Football Data Analysis")
+st.header("Women's Euro 2022 matches -  StatsBomb & Pandas")
 
 # Task 2 Section
 st.header("Task 2: Headed Goals in England vs Sweden")
@@ -70,17 +74,17 @@ st.markdown("""
 
 match_name = st.sidebar.selectbox("Select a match to analyze", list(EURO22MATCHES.keys()))
 
+event_type = None
+event_type = "Shot"
 
 
 match_id = EURO22MATCHES.get(match_name)
 if match_id is None:
     st.error(f"Match '{match_name}' not found")
-    
 else:
     events_df = get_match_events(match_id)
 
-    #event_type = st.sidebar.selectbox("Select event type", ["None", "Shot", "Pass", "Dribble"])
-    event_type = st.sidebar.selectbox("Select event type", ["None"] +events_df['type'].unique().tolist() )
+    event_type = st.sidebar.selectbox("Select event type", (["Shot"] if event_type == "Shot" else [] ) +  ["None"] + events_df['type'].unique().tolist())
 
     if event_type != "None":
         events_df = events_df[events_df['type'] == event_type]
@@ -88,9 +92,7 @@ else:
     if event_type == "Shot":
         body_part = st.sidebar.selectbox("Select body part", ["None"] + events_df['shot_body_part'].dropna().unique().tolist())
 
-
         shot_outcome = st.sidebar.selectbox("Select shot outcome (if applicable)", ["None"] + events_df['shot_outcome'].dropna().unique().tolist())
-
 
         if body_part != "None":
             events_df = events_df[events_df['shot_body_part'] == body_part]
@@ -99,9 +101,9 @@ else:
             events_df = events_df[events_df['shot_outcome'] == shot_outcome]
 
     if event_type != "None":
-        display_df = events_df[['timestamp', 'period'] + [col for col in events_df.columns if event_type.lower() in col and col not in ['timestamp', 'period']]].copy()
+        display_df = events_df[['timestamp', 'period', 'player', 'team','duration'] + [col for col in events_df.columns if event_type.lower() in col]].copy()
     else:
-        display_df = events_df        
+        display_df = events_df
     
     st.dataframe(display_df.reset_index(drop=True))
 

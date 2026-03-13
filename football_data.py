@@ -50,6 +50,7 @@ except Exception as e:
     EURO22MATCHES = {}
 
 st.title("⚽ Football Data Analysis")
+st.header("Women's Euro 2022 matches -  StatsBomb & Pandas")
 
 # Initialize session state
 if 'task_1_start_time' not in st.session_state:
