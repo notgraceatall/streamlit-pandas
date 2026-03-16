@@ -26,11 +26,11 @@ df = pd.read_csv("sheffielddata.txt", # I know it's not a csv file but it's clos
                  na_values = "---") # Convert --- to NaN (missing value)
 # so these values will be ignored in calculations
 
-
-
-# Convert to numbers (ignoring * & #) so we can do calculations on them 
-est_cols = ["MaxTempC", "MinTempC", "AirFrostDays", "RainfallMM", "SunshineHours"]
-df[est_cols] = df[est_cols].apply(pd.to_numeric, errors="coerce") 
+number_cols = ["MaxTempC", "MinTempC", "AirFrostDays", "RainfallMM", "SunshineHours"]
+# Convert the numbers_cols to pure numbers
+# ignoring the estimation of values marked with "*"
+# and the notes marked with "#"
+df[number_cols] = df[number_cols].apply(pd.to_numeric, errors="coerce") 
 
 st.subheader("Data from 'sheffielddata.txt' has been loaded and cleaned.")
 st.write(df)
