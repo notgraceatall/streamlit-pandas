@@ -1,11 +1,20 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-st.set_page_config(page_title="Sheffield Climate Data", layout="wide")
+#st.set_page_config(page_title="Sheffield Climate Data", layout="wide")
 st.title("Sheffield Climate Data Analysis")
-df = pd.read_csv("sheffielddata.txt",
-                 sep="  +",
-                 skiprows=7,
+
+st.markdown("""
+This repo has a `/.streamlit/config.toml` file.
+
+It has runOnSave set to true, which means that every time we save a file, it will automatically re-run the Streamlit app. This is really useful for development as it means we can see our changes immediately without having to manually refresh the app.                
+""")
+
+df = pd.read_csv("sheffielddata.txt", # I know it's not a csv file but it's close enough
+                 sep="  +", # this means split on 2 or more spaces, as the data is separated by multiple spaces
+                 skiprows=7, # Skip the first 7 rows which are just text and not data
                  names=["Year",
                         "Month",
                         "MaxTempC",
@@ -29,7 +38,11 @@ st.write(df)
 st.subheader("Example - Most Sunshine Month/Year:")
 sunniest = df[df["SunshineHours"] == df["SunshineHours"].max()]
 sunniest  # Prints it out as a dataframe, but we can also select specific columns to print out
-st.metric(label="Sunniest Month/Year", value=f"{sunniest['Month'].values[0]}/{sunniest['Year'].values[0]}")
+
+
+col1, col2 = st.columns(2)
+col1.metric(label="Sunniest Month/Year", value=f"{sunniest['Month'].values[0]}/{sunniest['Year'].values[0]}")
+col2.metric(label="Sunniest Month Hours", value=sunniest['SunshineHours'])
 
 st.header("Data Tasks")
 st.subheader("Task 1 - Output climate for 1884 and 1984")
@@ -65,7 +78,6 @@ st.subheader("Task 8 - Calculate the average minimum and maximum temperature for
 st.write("Hint: use groupby and mean(), you might want to do 2 charts for min and max temperature, or you can do them on the same chart but use the hue parameter to show them as different colours")
 
 st.header("Graphing Tasks - Matplotlib")
-import matplotlib.pyplot as plt
 st.subheader("Example - Graphing the rainfall for January by year as a line chart:")
 january_data = df[df["Month"] == 1]
 plt.figure(figsize=(10, 5),clear=True)
@@ -77,8 +89,6 @@ st.pyplot(plt,use_container_width=True, clear_figure =True)
 
 
 st.header("Graphing Tasks - Seaborn")
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 st.subheader("Example - Is there a correlation between sunshine hours and maximum temperature:")
 sns.scatterplot(data=df, x="SunshineHours", y="MaxTempC", hue="Year", legend=True)
