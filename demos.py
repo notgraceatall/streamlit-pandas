@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import time
@@ -34,10 +35,28 @@ df # Shows the dataframe in the Streamlit app
 
 
 # Saving cleaned data to a new file
-df.to_csv("shot_position.csv", index=False)
-df.to_excel("shot_position.xlsx", index=False)
-df.to_json("shot_position.json", orient="records")
+if "output" not in os.listdir():
+    os.mkdir("output")
 
+df.to_csv("output/shot_position.csv", index=False)
+df.to_excel("output/shot_position.xlsx", index=False)
+df.to_json("output/shot_position.json", orient="records")
+
+
+st.subheader("Grouping")
+team_stats = df.groupby('team')['shot_statsbomb_xg'].agg(['sum', 'mean', 'count']).reset_index()
+team_stats.columns = ['team', 'total_xg', 'average_xg', 'shot_count']   
+team_stats
+
+
+st.subheader("Shot Counts by Player")
+
+player_shots = df['player'].value_counts().reset_index()
+player_shots.columns = ['player', 'shot_count'] 
+
+player_shots
+
+st.subheader("Filtering")
 
 event_period = st.selectbox("Select event period", ["1","2"])   
 
@@ -65,4 +84,5 @@ except:
     
     
 df # Shows the filtered dataframe in the Streamlit app
+
 
