@@ -25,11 +25,11 @@ df['time_seconds'] = pd.to_timedelta(df['timestamp']).dt.total_seconds()
 df = df[(df['time_seconds'] >= 0) & (df['time_seconds'] <= 4000)]
 
 # Trim down to just the fields we want
-df = df[['timestamp', 'time_seconds', 'period', 'player', 'team', 'location',
-         'duration', 'shot_body_part', 'shot_deflected', 'shot_end_location',
-         'shot_first_time', 'shot_one_on_one', 'shot_outcome',
-         'shot_saved_off_target', 'shot_statsbomb_xg', 'shot_technique',
-         'shot_type']]
+df = df[['timestamp', 'time_seconds', 'period', 'player', 'team', 'type',
+         'location', 'duration', 'shot_body_part', 'shot_deflected',
+         'shot_end_location', 'shot_first_time', 'shot_one_on_one',
+         'shot_outcome', 'shot_saved_off_target', 'shot_statsbomb_xg',
+         'shot_technique', 'shot_type']]
 
 df # Shows the dataframe in the Streamlit app
 
@@ -41,6 +41,24 @@ if "output" not in os.listdir():
 df.to_csv("output/shot_position.csv", index=False)
 df.to_excel("output/shot_position.xlsx", index=False)
 df.to_json("output/shot_position.json", orient="records")
+
+st.subheader("Example - Filtering")
+
+st.text("""Here we filter the data to just shots that were first time shots 
+        (i.e. not rebounds or shots taken after a dribble).""")
+shots_first_time_df = df[(df['type']=="Shot") & (df['shot_first_time'] == True )]
+shots_first_time_df
+
+
+st.text("""Volley and half volley shots.
+Can be said as the shot_technique being either "Volley" or "Half Volley".""")
+shots_volley_df = df[(df['shot_technique'].isin(["Half Volley","Volley"]))]
+shots_volley_df
+
+st.text("""Long Carrys (dribbles) can be defined as events where the duration
+        is greater than 10 seconds and the type is "Carry".""")
+long_dribble_df = df[(df['duration'] > 10 ) & (df['type'] == "Carry" )]
+long_dribble_df
 
 
 st.subheader("Grouping")
@@ -62,7 +80,6 @@ event_period = st.selectbox("Select event period", ["1","2"])
 
 # Filter where data is equal to the selected value
 df = df[df['period'] == int(event_period)]
-
 
 # Slider Range
 st.subheader("Filter by Slider")
