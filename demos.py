@@ -18,7 +18,7 @@ from statsbombpy import sb
 # 
 df = sb.events(match_id=3835331)
 
-st.title("Streamlit Demos")
+st.title("Streamlit Demos :)")
 
 # Calculating a field
 df['time_seconds'] = pd.to_timedelta(df['timestamp']).dt.total_seconds()

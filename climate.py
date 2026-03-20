@@ -57,10 +57,17 @@ st.subheader("Task 2 - Show the average MaxTempC and MinTempC for 1884 and 1984.
 # Hint: you can use groupby to do this, or you can filter the data for each year and then calculate the average
 st.subheader("Task 3 - Find which month/year was the Coldest?")
 # Hint: use the same method as we did for finding the sunniest month/year  
+coldest = df[df["MinTempC"] == df["MinTempC"].min()]
+coldest  # Prints it out as a dataframe, but we can also select specific columns to print out
+
 
 st.subheader("Task 4 - Find which month/year was the Hottest?")
+hottest = df[df["MaxTempC"] == df["MaxTempC"].max()]
+hottest  # Prints it out as a dataframe, but we can also select specific columns to print out
 
 st.subheader("Task 5 - Which month/year had the most rainfall?")
+rainiest = df[df["RainfallMM"] == df["RainfallMM"].max()]
+rainiest  # Prints it out as a dataframe, but we can also select specific columns to print out
 
 st.header("User Input Tasks")
 st.subheader("Task 6 - Get user to input a year and output that year")
